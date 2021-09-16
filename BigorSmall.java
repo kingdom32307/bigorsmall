@@ -153,13 +153,13 @@ public class BigorSmall {
 		// show current state
 		chips.current_state(input, choice, card1);
 		// pick second card. if picked all card, trump card will be initialized
-		while(card2 == -1) {
+		card2 = trump.pick();
+		if (card2 == -1) {
+			System.out.println("カードの残り枚数がゼロになりましたので，カードを元に戻します！");
+			trump.initFlag();
 			card2 = trump.pick();
-			if (card2 == -1) {
-				System.out.println("カードの残り枚数がゼロになりましたので，カードを元に戻します！");
-				trump.initFlag();
-			}
 		}
+
 
 
 		// show picked card

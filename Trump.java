@@ -31,23 +31,20 @@ public class Trump {
 				flag[pick_card] = 1;
 				break;
 			}
+
 		}
 		if (option==51) {
 			return -1;
 		}
-
+		show();
 		return pick_card;
 	}
 
-//	public void show() {
-//		for (int i=0; i<num.length; i++) {
-//			for (int j=0; j<num[0].length; j++) {
-//				System.out.println("count:"+x);
-//				System.out.println(num[i][j]);
-//				x++;
-//			}
-//		}
-//	}
+	public void show() {
+		for (int i=0; i<flag.length; i++) {
+			System.out.println(flag[i]);
+		}
+	}
 
 
 }
