@@ -14,13 +14,14 @@ public class Trump {
 		initFlag();
 
 	}
-
+	// initialize trump card
 	public void initFlag() {
 		for (int i=0; i<flag.length; i++) {
 				flag[i]=0;
 		}
 	}
 
+	// pick card if flag is 0 and picked card turn to 1
 	public int pick() {
 		int pick_card = 0;
 		int option = 0;

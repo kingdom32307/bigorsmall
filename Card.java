@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Card {
-
+	// set trump card
     List<String> card_list = new ArrayList<String>() {
         {
           add("スペード13");
@@ -63,17 +63,17 @@ public class Card {
       };
 
 
-
+    // show current card
 	public void currentCard(int i) {
 		System.out.println("現在のカード:"+card_list.get(i));
 	}
-
+	// show picked card
 	public void pickCard(int i) {
 		System.out.println("引いたカード:"+card_list.get(i));
 
 	}
 
-
+	// show Big or Small
 	public void show(int card1, int card2) {
 		int flag = bigorsmall(card1, card2);
 		if (flag == 1) {
@@ -84,7 +84,7 @@ public class Card {
 
 	}
 
-
+	// return 0 or 1 based on card
 	public int bigorsmall(int card1, int card2) {
 		//if card1 is big than card2, return 1.
 		if (card1<card2) {
