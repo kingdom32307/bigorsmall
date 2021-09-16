@@ -36,14 +36,8 @@ public class Trump {
 		if (option==51) {
 			return -1;
 		}
-		show();
-		return pick_card;
-	}
 
-	public void show() {
-		for (int i=0; i<flag.length; i++) {
-			System.out.println(flag[i]);
-		}
+		return pick_card;
 	}
 
 
