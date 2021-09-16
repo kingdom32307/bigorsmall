@@ -4,48 +4,50 @@ import java.util.Random;
 
 public class Trump {
 
-	private int[][] num = new int[4][13];
 
-	private int x =0;
+
+	private int[] flag = new int[52];
 
 	Random r = new Random();
 
 	Trump() {
-		setNum(0);
+		initFlag();
 
 	}
 
-	public void setNum(int x) {
-		for (int i=0; i<num.length; i++) {
-			for (int j=0; j<num[0].length; j++) {
-				num[i][j]=x;
-			}
+	public void initFlag() {
+		for (int i=0; i<flag.length; i++) {
+				flag[i]=0;
 		}
 	}
 
-	public int[] pick() {
-		int data[] = new int[2];
+	public int pick() {
+		int pick_card = 0;
+		int option = 0;
 		for (int k=0; k<52; k++) {
-			data[0] = r.nextInt(4);
-			data[1] = r.nextInt(13);
-			if (num[data[0]][data[1]] != 1) {
-				num[data[0]][data[1]] = 1;
+			pick_card = r.nextInt(52);
+			option = k;
+			if (flag[pick_card] != 1) {
+				flag[pick_card] = 1;
 				break;
 			}
 		}
-
-		return data;
-	}
-
-	public void show() {
-		for (int i=0; i<num.length; i++) {
-			for (int j=0; j<num[0].length; j++) {
-				System.out.println("count:"+x);
-				System.out.println(num[i][j]);
-				x++;
-			}
+		if (option==51) {
+			return -1;
 		}
+
+		return pick_card;
 	}
+
+//	public void show() {
+//		for (int i=0; i<num.length; i++) {
+//			for (int j=0; j<num[0].length; j++) {
+//				System.out.println("count:"+x);
+//				System.out.println(num[i][j]);
+//				x++;
+//			}
+//		}
+//	}
 
 
 }

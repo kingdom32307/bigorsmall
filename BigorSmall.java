@@ -8,36 +8,30 @@ public class BigorSmall {
 	Trump trump = new Trump();
 	Chips chips = new Chips();
 	Scanner scanner = new Scanner(System.in);
-	private int data[] = new int[2];
-	private int data2[] = new int[2];
-	private int cash[] = new int[2];
-	private int ten = 10;
-	private int one = 0;
-	private int input;
-	private int choice;
-	private String BorS = "";
-	private int outcome;
-	private int sum;
+	private int card1; //picked card before user decide Big or Small
+	private int card2 = -1; //picked card after user decide Big or Small
+	private int chips_ = 100; // initialized chips
+	private int input; // number of betting chips
+	private int choice; // choice that user decide Big or Small
+	private int outcome; // return 1 or 0 whether card2 is bigger than card1 or not
 	private int flag = 0;
 	private int game = 0;
-	private int option =0;
+
 	BigorSmall(){
-		chips.setChips(ten, one);
-		trump.setNum(0);
+		trump.initFlag();
 	}
 
 
 	public void start() {
+		// if game is 1, this game is over
 		while (game == 0) {
-			game();
-			System.out.println("*****現在のチップ枚数*****");
-			chips.show(ten, one);
-			System.out.println("****************************");
+			game(); //game method start
+			chips.current_chips(chips_); // show current chips
 			while (true){
 				try{
 					System.out.println("[ゲームを続けますか？]: 0:Yes 1:No");
 					game = scanner.nextInt();
-					takeChoice(game);
+					throwZeroOne(game); // throw error
 					System.out.println("");
 					break;
 				}catch(InputMismatchException ex) {
@@ -50,12 +44,15 @@ public class BigorSmall {
 				}
 			}
 
-			if (0 >= chips.sum(ten, one)) {
+			// game is over if chips is less than 1
+			if (0 >= chips_) {
 				System.out.println("チップが0枚になりました．");
 				break;
 			}
+			// if game is 0 and chips is more than 1, game method still continue
 			if (game == 0) {
-				trump.setNum(0);
+				// trump card is initialized
+				trump.initFlag();
 				flag = 0;
 			}
 
@@ -68,28 +65,25 @@ public class BigorSmall {
 	}
 
 	public void game() {
-		data = trump.pick();
-		System.out.println("*****チップ枚数とカード*****");
-		chips.show(ten, one);
-		card.currentCard(data[0],data[1]);
-		System.out.println("****************************");
-		System.out.println("");
+		card1 = trump.pick(); // card1 is picked
+		// show current chips and card
+		chips.current_chips_card(chips_, card1);
 
-		bet();
+		bet(); // bet method start
+		// if flag is 1, this method is over
 		while (flag == 0) {
 
-			bigorsmall();
-			play();
+			bigorsmall(); // bigorsmall method start. User choose Big or Small
+			play(); // play method start
 
 			if (flag == 1) break;
 
-
-
+			// user select game continue or not
 			while (true){
 				try{
 					System.out.println("[獲得したチップ"+input+"枚でBig or Smallを続けますか？]: 0:Yes 1:No");
 					flag = scanner.nextInt();
-					takeChoice(flag);
+					throwZeroOne(flag);
 					System.out.println("");
 					break;
 				}catch(InputMismatchException ex) {
@@ -103,25 +97,22 @@ public class BigorSmall {
 			}
 
 		}
-		sum+=input;
-		cash = chips.toCash(0,sum);
-		ten = cash[0];
-		one = cash[1];
+
+		// betted chips added total chips
+		chips_+=input;
 
 	}
 
 	public void bet() {
 	System.out.println("■BET枚数選択");
-	while (option == 0){
+	while (true){
 		try{
 			System.out.println("BETするチップ数を入力して下さい(最低1～最大20)");
 			input = scanner.nextInt();
-			sum = chips.sum(ten, one);
-			takeChips(input);
-			sum-=input;
-			cash = chips.toCash(0,sum);
-			ten = cash[0];
-			one = cash[1];
+
+			throwInput(input);
+			//total chips is subtracted by betted chips
+			chips_-=input;
 			System.out.println("");
 			break;
 		}catch(InputMismatchException ex) {
@@ -135,14 +126,15 @@ public class BigorSmall {
 	}
 	}
 
+	// User choose Big or Small
 	public void bigorsmall() {
 		System.out.println("■Big or Small選択");
-		card.currentCard(data[0],data[1]);
+		card.currentCard(card1); // show current card
 		while (true){
 			try{
 				System.out.println("[Big or Small]: 0:BIg 1:Small");
 				choice = scanner.nextInt();
-				takeChoice(choice);
+				throwZeroOne(choice); // throw error
 				System.out.println("");
 				break;
 			}catch(InputMismatchException ex) {
@@ -158,27 +150,36 @@ public class BigorSmall {
 	}
 
 	public void play() {
-		System.out.println("********Big or Small********");
-		System.out.println("BET数:"+input);
-		BorS = BorS(choice);
-		System.out.println("あなたの選択:" +BorS);
-		card.currentCard(data[0],data[1]);
-		data2 = trump.pick();
-		card.pickCard(data2[0],data2[1]);
-		outcome = oneorzero(data,data2);
+		// show current state
+		chips.current_state(input, choice, card1);
+		// pick second card. if picked all card, trump card will be initialized
+		while(card2 == -1) {
+			card2 = trump.pick();
+			if (card2 == -1) {
+				System.out.println("カードの残り枚数がゼロになりましたので，カードを元に戻します！");
+				trump.initFlag();
+			}
+		}
 
-		System.out.println(card.show(data2[0], data2[1])+"は"+card.show(data[0], data[1])+"より"+BorS(outcome));
+
+		// show picked card
+		card.pickCard(card2);
+		// return 1 if card2 is bigger than card1, and vice versa
+		outcome = card.bigorsmall(card1,card2);
+		//show card outcome
+		card.show(card1, card2);
 
 		System.out.println("****************************");
 
-		if (BorS == BorS(outcome)) {
+
+		if (card.choice(outcome) == card.choice(choice)) {
 			System.out.println("Win!!");
 			input*=2;
 			System.out.println("チップ"+input+"枚を獲得しました");
 			System.out.println("");
-			data = data2;
+			card1 = card2;
 
-		} else if(BorS != BorS(outcome)) {
+		} else if(card.choice(outcome) != card.choice(choice)) {
 			System.out.println("Lose...");
 			System.out.println("");
 			input = 0;
@@ -187,9 +188,8 @@ public class BigorSmall {
 		}
 	}
 
-	public void takeChips(int input) throws Exception {
-		int sum;
-		sum = chips.sum(ten,one);
+	public void throwInput(int input) throws Exception {
+
 
 		if (input>20) {
 			throw new MyException("入力されたデータが上限値を上回っています。");
@@ -197,42 +197,17 @@ public class BigorSmall {
 		}else if(input<1) {
 			throw new MyException("入力されたデータが下限値を下回っています。");
 
-		}else if (input > sum) {
+		}else if (input > chips_) {
 			throw new MyException("入力されたデータが上限値を上回っています。");
 
 		}
 	}
 
-	public void takeChoice(int input) throws Exception {
+	public void throwZeroOne(int input) throws Exception {
 		if ((input != 0) && (input !=1)) {
 			throw new MyException("正しく入力してください。");
 
 		}
 	}
-
-	public String BorS(int input) {
-		String small = "Small";
-		String big = "Big";
-		if (input == 1) {
-			return small;
-		}else if(input == 0) {
-			return big;
-		}
-		return big;
-	}
-
-	public int oneorzero(int[] data1, int[] data2) {
-		if (data1[1]>data2[1]) {
-			return 1;
-		} else if (data1[1]<data2[1]) {
-			return 0;
-		} else if (data1[0]>data2[0]) {
-			return 0;
-		} else if (data1[0]<data2[1]) {
-			return 1;
-		}
-		return 1;
-	}
-
 
 }
